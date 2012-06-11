@@ -117,56 +117,56 @@ relocatable code.
 Instruction Reference
 ---------------------
 
-> go *direction*
-> > Moves the robot in the direction specified.
+go *direction*
+> Moves the robot in the direction specified.
 
-> build *direction*
-> > Builds a robot in the direction specified.  The newly created Robot will be
-> > programmed with a single 'jump 0' instruction at position 0.
+build *direction*
+> Builds a robot in the direction specified.  The newly created Robot will be
+> programmed with a single 'jump 0' instruction at position 0.
 
-> jump *position*
-> > Jumps to the specified instruction. Jumping past the end of the program will
-> > kill the Robot.
+jump *position*
+> Jumps to the specified instruction. Jumping past the end of the program will
+> kill the Robot.
 
-> fork
-> > Splits the flow of the process into two independent parts.  L0 will be set
-> > to $parent in the parent thread, and $child in the child thread. Each new
-> > thread consumes more resources and commands will run slower the more threads
-> > are active.
+fork
+> Splits the flow of the process into two independent parts.  L0 will be set
+> to $parent in the parent thread, and $child in the child thread. Each new
+> thread consumes more resources and commands will run slower the more threads
+> are active.
 
-> exit
-> > Ends the current thread.  If the last remaining thread calls exit, L0 is set
-> > to $failure and execution continues.
+exit
+> Ends the current thread.  If the last remaining thread calls exit, L0 is set
+> to $failure and execution continues.
 
-> if *cmp* *left* *right*
-> > Runs the next instruction if the comparison returns True, otherwise skip the
-> > next instruction. *cmp* may be any of $eq, $ne, $lt, $le, $gt, or $ge or any
-> > argument that evaluates to those values.
+if *cmp* *left* *right*
+> Runs the next instruction if the comparison returns True, otherwise skip the
+> next instruction. *cmp* may be any of $eq, $ne, $lt, $le, $gt, or $ge or any
+> argument that evaluates to those values.
 
-> set *dest* *src*
-> > Copy the value from *src* into *dest*
+set *dest* *src*
+> Copy the value from *src* into *dest*
 
-> add *dest* *src*
-> sub *dest* *src*
-> div *dest* *src*
-> mul *dest* *src*
-> > Perform a math operation between *dest* and *src* and store the value in
-> > *dest*.
+add *dest* *src*
+sub *dest* *src*
+div *dest* *src*
+mul *dest* *src*
+> Perform a math operation between *dest* and *src* and store the value in
+> *dest*.
 
-> xfer *direction* *src* *dest*
-> > Transfer a single instruction at *src* in the local Robot to *dest* in the
-> > remote Robot in the direction *direction*.  Sets L0 to $success or $failure.
+xfer *direction* *src* *dest*
+> Transfer a single instruction at *src* in the local Robot to *dest* in the
+> remote Robot in the direction *direction*.  Sets L0 to $success or $failure.
 
-> scan *direction*
-> > Scans *direction* for robots.  Sets L0 to $failure if the space is empty, or
-> > sets L0 to the team, and L1 to the id of the scanned robot.
+scan *direction*
+> Scans *direction* for robots.  Sets L0 to $failure if the space is empty, or
+> sets L0 to the team, and L1 to the id of the scanned robot.
 
-> save *src* *variable*
-> > Save the value *src* into the memory bank at the location specified by
-> > *variable*.  *variable* is a special argument that may be any normal argument,
-> > or a percent sign followed by the variable name, for example '%name'.
+save *src* *variable*
+> Save the value *src* into the memory bank at the location specified by
+> *variable*.  *variable* is a special argument that may be any normal argument,
+> or a percent sign followed by the variable name, for example '%name'.
 
-> load *dest* *variable*
-> > Load the value *src* from the memory bank at the location specified by
-> > *variable*.  *variable* is a special argument that may be any normal argument,
-> > or a percent sign followed by the variable name, for example '%name'.
+load *dest* *variable*
+> Load the value *src* from the memory bank at the location specified by
+> *variable*.  *variable* is a special argument that may be any normal argument,
+> or a percent sign followed by the variable name, for example '%name'.
