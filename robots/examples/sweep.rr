@@ -1,0 +1,159 @@
+fork                ' Create the two spawning threads.
+if $eq L0 $child
+jump :left          ' Child runs like a left builder
+jump :right         ' Parent runs like a right builder
+
+:left
+set L0 $pc
+sub L0 1
+save L0 %left       ' Save the absolute position of :left
+
+scan $left
+
+if $eq L0 $team
+jump (:left-sweep)  ' There's a team mate in our way, skip ahead
+
+if $eq L0 $failure
+jump (:left-build)  ' There's nothing in our way, build something
+
+' There's something that isn't a teammate in our way!
+set L1 $left
+jump (:left-kill)
+
+:left-build
+build $left
+
+' Set up loop variables
+set L1 (:left-end)  ' L1 -> length of stuff to copy after this line
+sub L1 (:left)      ' Add length of stuff to copy before this line
+
+:left-cpy
+load L0 %left
+add L0 L1
+sub L1 1
+xfer $left L0 L1    ' L0 is src, L1 is dest
+if $gt L1 0         ' Are we done copying?
+jump (:left-cpy)    ' No, keep sweeping!
+
+jump (1)            ' Waste a cycle to stay sync'd with the right builders
+
+:left-move
+go $up
+
+:left-sweep
+:left-sweep-right   ' Check the left side for enemies
+scan $right
+if $ne L0 $failure
+if $eq L0 $team
+jump (:left-sweep-left)
+set L1 $right
+jump (:left-kill)
+
+:left-sweep-left
+scan $left
+if $ne L0 $failure
+if $eq L0 $team
+jump (:left-sweep-up)
+set L1 $left
+jump (:left-kill)
+
+:left-sweep-up
+scan $up
+if $eq L0 $failure
+jump (:left-move)   ' Its empty, charge ahead!
+if $eq L0 $team
+jump (:left-move)   ' By the time this robot moves, the other one should be out of the way
+set L1 $up
+
+' Its not empty, and its not a teammate, so kill it.
+
+:left-kill
+set G0 0
+:left-kill-loop
+xfer L1 (:left-bomb) G0
+if $eq L0 $failure
+jump (:left-sweep)
+add G0 1
+jump (:left-kill-loop)
+
+
+:left-bomb
+div 0 0
+:left-end
+
+:right
+set L0 $pc
+sub L0 1
+save L0 %right      ' Save the absolute position of :right
+
+scan $right
+
+if $eq L0 $team
+jump (:right-sweep) ' There's a team mate in our way, skip ahead
+
+if $eq L0 $failure
+jump (:right-build) ' There's nothing in our way, build something
+
+' There's something that isn't a teammate in our way!
+set L1 $right
+jump (:right-kill)
+
+:right-build
+build $right
+
+' Set up loop variables
+set L1 (:right-end) ' L1 -> length of stuff to copy after this line
+sub L1 (:right)     ' Add length of stuff to copy before this line
+
+:right-cpy
+load L0 %right
+add L0 L1
+sub L1 1
+xfer $right L0 L1   ' L0 is src, L1 is dest
+if $gt L1 0         ' Are we done copying?
+jump (:right-cpy)   ' No, keep sweeping!
+
+exit                ' Kills the second thread in the motherbot
+
+:right-move
+go $up
+
+:right-sweep
+:right-sweep-right   ' Check the right side for enemies
+scan $right
+if $ne L0 $failure
+if $eq L0 $team
+jump (:right-sweep-left)
+set L1 $right
+jump (:right-kill)
+
+:right-sweep-left
+scan $left
+if $ne L0 $failure
+if $eq L0 $team
+jump (:right-sweep-up)
+set L1 $left
+jump (:right-kill)
+
+:right-sweep-up
+scan $up
+if $eq L0 $failure
+jump (:right-move)  ' Its empty, charge ahead!
+if $eq L0 $team
+jump (:right-move)  ' By the time this robot moves, the other one should be out of the way
+
+' Its not empty, and its not a teammate, so kill it.
+set L0 $up
+
+:right-kill
+set G0 0
+:right-kill-loop
+xfer L1 (:right-bomb) G0
+if $eq L0 $failure
+jump (:right-sweep)
+add G0 1
+jump (:right-kill-loop)
+
+:right-bomb
+div 0 0
+:right-end

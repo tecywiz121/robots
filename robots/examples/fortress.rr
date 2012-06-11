@@ -1,0 +1,6 @@
+build $up
+xfer $up (:boot) 1000
+xfer $up (:boot) 0
+
+:boot
+jump 1000

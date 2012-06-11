@@ -1,0 +1,22 @@
+:start
+build $left
+
+:program
+set L1 :end
+sub L1 1
+
+:program-loop
+if $lt L1 :new
+jump (:start)       ' Exit the loop when the counter reaches :new
+
+set L0 L1           ' Copy source location to L0
+sub L0 :new         ' Make relative to :start
+
+xfer $left L1 L0    ' Transfer the new instruction from L1 to L0
+sub L1 1
+jump (:program-loop)
+
+:new
+go $up
+jump (:new)
+:end

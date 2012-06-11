@@ -1,0 +1,37 @@
+' Currently borked.
+
+set G0 $up
+:main
+scan G0
+if $eq L0 $failure
+jump (:create)
+if $ne L0 $team
+jump (:kill)
+
+add G0 1
+if $gt G0 $left
+set G0 $up
+jump (:main)
+
+:create
+build G0
+set L1 :end-main
+:create-loop
+xfer G0 L1 L1
+sub L1 1
+if $lt L1 0
+jump (:main)
+jump (:create-loop)
+
+:kill
+set L1 0
+:kill-loop
+xfer G0 (:bomb) L1
+if $eq L0 $failure
+jump (:main)
+add L1 1
+jump (:kill-loop)
+
+:bomb
+div 0 0
+:end-main

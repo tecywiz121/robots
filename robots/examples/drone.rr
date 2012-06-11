@@ -1,0 +1,18 @@
+:start
+set G0 0
+:destroy
+    scan $right
+    if $eq L0 $failure
+    jump (:seek)
+
+    xfer $right (:bomb) G0
+    add G0 1
+    jump (:destroy)
+
+:seek
+go $right
+jump (:start)
+
+
+:bomb
+div 0 0
